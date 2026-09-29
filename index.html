@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f3ec" />
+    <meta name="description" content="A thoughtful, lightweight planner for the things that matter today." />
+    <title>Daymark — make room for what matters</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="./" aria-label="Daymark home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>daymark<span class="brand-period">.</span></span>
+        </a>
+
+        <div class="nav-label">YOUR SPACE</div>
+        <nav class="primary-nav" aria-label="Views">
+          <button class="nav-item is-active" data-view="today"><span class="nav-glyph">◷</span><span>Today</span><span class="nav-count" id="today-count">0</span></button>
+          <button class="nav-item" data-view="upcoming"><span class="nav-glyph">▦</span><span>Upcoming</span><span class="nav-count" id="upcoming-count">0</span></button>
+          <button class="nav-item" data-view="all"><span class="nav-glyph">≡</span><span>All tasks</span><span class="nav-count" id="all-count">0</span></button>
+          <button class="nav-item" data-view="completed"><span class="nav-glyph">✓</span><span>Completed</span></button>
+        </nav>
+
+        <div class="nav-label projects-label">PROJECTS <button class="text-icon" id="clear-project" type="button" aria-label="Clear project filter" title="Clear project filter">×</button></div>
+        <nav class="project-nav" aria-label="Projects">
+          <button class="project-item" data-project="Work"><span class="project-dot dot-coral"></span>Work</button>
+          <button class="project-item" data-project="Personal"><span class="project-dot dot-blue"></span>Personal</button>
+          <button class="project-item" data-project="Home"><span class="project-dot dot-green"></span>Home</button>
+          <button class="project-item" data-project="Inbox"><span class="project-dot dot-gray"></span>Inbox</button>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-note" aria-label="A note to take a breath">
+            <span class="note-sun" aria-hidden="true">✳</span>
+            <p>Small steps<br />still move you<br /><em>forward.</em></p>
+            <span class="note-caption">A LITTLE REMINDER</span>
+          </div>
+          <button class="install-link" id="install-app" type="button" hidden><span aria-hidden="true">↓</span> Install Daymark</button>
+          <div class="sidebar-foot">MADE FOR REAL LIFE <span>© 2026</span></div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumb"><span>MY DAY</span><span class="breadcrumb-slash">/</span><span id="topbar-date"></span></div>
+          <label class="search-box"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Find a task" autocomplete="off" aria-label="Search tasks" /><kbd>/</kbd></label>
+        </header>
+
+        <div class="workspace">
+          <section class="task-column" aria-labelledby="page-title">
+            <div class="page-heading">
+              <div class="heading-copy"><p class="eyebrow" id="date-eyebrow">YOUR DAY, AT A GLANCE</p><h1 id="page-title">Today<span class="heading-period">.</span></h1><p class="heading-date" id="full-date"></p></div>
+              <div class="heading-spark" aria-hidden="true"><span>✳</span></div>
+            </div>
+
+            <form class="quick-add" id="task-form">
+              <span class="add-mark" aria-hidden="true">+</span>
+              <input id="task-title" name="title" type="text" maxlength="120" placeholder="Add something to your day..." autocomplete="off" required aria-label="New task" />
+              <div class="add-options" id="task-options">
+                <label class="sr-only" for="task-date">Due date</label>
+                <input id="task-date" type="date" aria-label="Due date" />
+                <label class="sr-only" for="task-project">Project</label>
+                <select id="task-project" aria-label="Project"><option>Inbox</option><option>Work</option><option>Personal</option><option>Home</option></select>
+                <label class="sr-only" for="task-priority">Priority</label>
+                <select id="task-priority" aria-label="Priority"><option value="normal">Normal</option><option value="high">High priority</option><option value="low">Low priority</option></select>
+              </div>
+              <button class="options-toggle" id="options-toggle" type="button" aria-label="Task options" aria-expanded="false" aria-controls="task-options" title="Task options">···</button>
+              <button class="add-button" type="submit" aria-label="Add task" title="Add task">↵</button>
+            </form>
+
+            <div class="list-toolbar">
+              <div class="list-tabs" role="group" aria-label="Task status filter">
+                <button class="tab is-selected" data-status="open" type="button">To do</button>
+                <button class="tab" data-status="completed" type="button">Done</button>
+              </div>
+              <span class="task-total" id="visible-count"></span>
+            </div>
+            <div class="task-list" id="task-list" aria-live="polite"></div>
+            <p class="storage-note"><span aria-hidden="true">◉</span> Your tasks stay on this device</p>
+          </section>
+
+          <aside class="insight-column" aria-label="Daily overview">
+            <section class="progress-panel">
+              <div class="panel-kicker"><span>THE DAILY EDITION</span><span class="panel-sun" aria-hidden="true">✳</span></div>
+              <p class="progress-title">A little<br />progress adds up.</p>
+              <div class="progress-visual">
+                <div class="progress-ring" id="progress-ring" role="img" aria-label="0 percent of tasks complete"><div class="ring-inner"><strong id="progress-percent">0%</strong><span>COMPLETE</span></div></div>
+                <div class="progress-copy"><strong id="progress-count">0 of 0</strong><span>tasks wrapped up</span><span class="progress-message" id="progress-message">A fresh page.</span></div>
+              </div>
+              <div class="panel-rule"></div>
+              <div class="focus-label"><span class="focus-pip"></span> A GOOD PLACE TO START</div>
+              <p class="focus-task" id="focus-task">Add your first task and begin anywhere.</p>
+            </section>
+
+            <section class="week-panel">
+              <div class="week-heading"><div><p class="eyebrow">YOUR WEEK</p><h2>Little by little</h2></div><span class="week-total" id="week-total">0 done</span></div>
+              <div class="week-chart" id="week-chart" role="img" aria-label="Tasks completed this week"></div>
+            </section>
+
+            <div class="closing-note"><span aria-hidden="true">“</span><p>You don't have to do it all.<br />Just the next right thing.</p><span class="note-line"></span></div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <button class="mobile-nav-item is-active" data-view="today"><span aria-hidden="true">◷</span>Today</button>
+      <button class="mobile-nav-item" data-view="upcoming"><span aria-hidden="true">▦</span>Upcoming</button>
+      <button class="mobile-nav-item" data-view="all"><span aria-hidden="true">≡</span>All tasks</button>
+      <button class="mobile-nav-item" data-view="completed"><span aria-hidden="true">✓</span>Done</button>
+    </nav>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
